@@ -43,7 +43,7 @@ export class Usuario {
   }
 
   get foto() {
-    return this.authData && this.authData.photoURL;
+    return this.authData && this.authData.providerData[0].photoURL;
   }
 
   login(provider) {
