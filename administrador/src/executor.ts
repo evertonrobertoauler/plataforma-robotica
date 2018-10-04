@@ -9,17 +9,15 @@
 */
 
 import * as firebaseService from './modulos/firebase-service';
-import * as s3 from './modulos/s3';
 import * as camera from './modulos/camera';
 import * as braco from './modulos/braco';
 
-const config = require('./../config.json');
+import { firebaseCert, firebasePublic, serial } from './config';
 
-import {Status} from '../../interface/src/compartilhado/config';
+import { Status } from '../../interface/src/compartilhado/config';
 
-firebaseService.inicializar(config.firebase);
-s3.inicializar(config.s3);
-braco.inicializar(config.serial);
+firebaseService.inicializar(firebaseCert, firebasePublic);
+braco.inicializar(serial);
 
 iniciarExecutor().catch(err => console.error(err));
 
@@ -31,11 +29,11 @@ async function iniciarExecutor() {
     console.log('Iniciando: ', snapshot.key);
 
     // Atualiza o Status do programa para Executando
-    await firebaseService.atualizarPrograma(snapshot, {status: Status.Executando});
+    await firebaseService.atualizarPrograma(snapshot, { status: Status.Executando });
 
     let nmArquivo = `videos/${snapshot.key}.ogv`;
 
-    // Inicia o seguinte comando no Terminal Linux: 
+    // Inicia o seguinte comando no Terminal Linux:
     // ffmpeg -y -i /dev/video0 -s 320x240 -codec:v libtheora -qscale:v 7 -codec:a libvorbis -qscale:a 5 videos/nmArquivo.ogv
     let ffmpeg = camera.iniciarGravacao(nmArquivo);
 
@@ -48,19 +46,19 @@ async function iniciarExecutor() {
 
     // Adicionando 1 segundo no final do video
     await camera.delay(1000);
-   
+
     // Comando Linux ffmpeg finalizado
     camera.finalizarGravacao(ffmpeg);
     console.log('finalizou gravacao');
 
-    // Arquivo .ogv enviado e armazenado no Amazon S3
-    let dsUrlS3 = await s3.enviarVideo(nmArquivo);
+    // Arquivo .ogv enviado e armazenado no Storage do Firebase
+    let dsUrl = await firebaseService.enviarVideo(nmArquivo);
     console.log('enviou video');
-    
+
     // Status do programa atualizado como Finalizado e Link para o video associado ao programa.
     await firebaseService.atualizarPrograma(snapshot, {
       status: Status.Finalizado,
-      video: dsUrlS3
+      video: dsUrl
     });
 
     console.log('Finalizando: ', snapshot.key);

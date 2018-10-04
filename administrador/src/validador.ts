@@ -7,12 +7,12 @@
 
 import * as firebaseService from './modulos/firebase-service';
 
-const config = require('./../config.json');
+import { Status } from '../../interface/src/compartilhado/config';
+import { validarPrograma } from '../../interface/src/compartilhado/validador';
 
-import {Status} from '../../interface/src/compartilhado/config';
-import {validarPrograma} from '../../interface/src/compartilhado/validador';
+import { firebaseCert, firebasePublic } from './config';
 
-firebaseService.inicializar(config.firebase);
+firebaseService.inicializar(firebaseCert, firebasePublic);
 
 iniciarValidador().catch(err => console.error(err));
 
@@ -25,7 +25,7 @@ async function iniciarValidador() {
     try {
       validarPrograma(snapshot.val().programa);
       console.log('Válido: ', snapshot.key);
-      await firebaseService.atualizarPrograma(snapshot, {status: Status.Validado});
+      await firebaseService.atualizarPrograma(snapshot, { status: Status.Validado });
     } catch (e) {
       console.log('Inválido: ', snapshot.key);
       await firebaseService.atualizarPrograma(snapshot, {

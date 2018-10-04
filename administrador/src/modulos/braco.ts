@@ -1,14 +1,14 @@
- import * as SerialPort from 'serialport';
-//import {FakeSerialPort as SerialPort} from './fake-serialport';
-import {instrucoes} from '../../../interface/src/compartilhado/config';
+import { instrucoes } from '../../../interface/src/compartilhado/config';
 
-let serialPort;
+const SerialPort = require('serialport');
+const Readline = SerialPort.parsers.Readline;
+
+let port;
+let readline;
 
 export function inicializar(serial) {
-  serialPort = new SerialPort(serial, {
-    baudrate: 9600,
-    parser: SerialPort.parsers.readline('\n')
-  });
+  port = new SerialPort(serial, { baudRate: 9600 });
+  readline = port.pipe(new Readline({ delimiter: '\r\n' }));
 }
 
 export async function executarPrograma(programa) {
@@ -25,11 +25,13 @@ export async function executarPrograma(programa) {
 }
 
 function escreverNaSerial(instrucoes) {
-  return Promise.all(instrucoes.map(instrucao => {
-    return new Promise((resolve, reject) => {
-      serialPort.write((instrucao + ''), e => e ? reject(e) : resolve(e));
-    });
-  }));
+  return Promise.all(
+    instrucoes.map(instrucao => {
+      return new Promise((resolve, reject) => {
+        port.write(instrucao + '', e => (e ? reject(e) : resolve(e)));
+      });
+    })
+  );
 }
 
 function lerRetornoSerial() {
@@ -42,6 +44,6 @@ function lerRetornoSerial() {
       }
     };
 
-    serialPort.once('data', fn);
+    readline.once('data', fn);
   });
 }
