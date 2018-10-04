@@ -1,8 +1,9 @@
-/// <reference path="typings.d.ts" />
-
 import * as angular from 'angular';
 
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
+
 (<any>window).firebase = firebase;
 
 import 'angular-material';
@@ -11,11 +12,7 @@ import 'angular-ui-router';
 
 import './index.scss';
 
-const ngModule = angular.module('app', [
-  'ngMaterial',
-  'firebase',
-  'ui.router'
-]);
+const ngModule = angular.module('app', ['ngMaterial', 'firebase', 'ui.router']);
 
 import { routesConfig } from './config/routes.config';
 import { themingConfig } from './config/theme.config';
@@ -35,10 +32,12 @@ import { blockly } from './components/editor/blockly/blockly.component';
 
 ngModule
   .value('FIREBASE_CONFIG', {
-    apiKey: 'AIzaSyAZLnIyvKKcIsr-rYMEY8tKm_2rGG3NPmQ',
-    authDomain: 'plataforma-robotica-7d010.firebaseapp.com',
-    databaseURL: 'https://plataforma-robotica-7d010.firebaseio.com',
-    storageBucket: 'open-peer-instruction.appspot.com'
+    apiKey: 'AIzaSyAsFOHIPblybbLyawjyqDMwzo1CTAn0Aw0',
+    authDomain: 'plataforma-robotica-eee33.firebaseapp.com',
+    databaseURL: 'https://plataforma-robotica-eee33.firebaseio.com',
+    projectId: 'plataforma-robotica-eee33',
+    storageBucket: 'plataforma-robotica-eee33.appspot.com',
+    messagingSenderId: '37524032926'
   })
   .service('Firebase', Firebase)
   .service('Usuario', Usuario)

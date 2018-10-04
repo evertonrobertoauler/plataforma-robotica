@@ -3,14 +3,8 @@
     "max-line-length": [true, 100],
     "no-inferrable-types": true,
     "class-name": true,
-    "comment-format": [
-      true,
-      "check-space"
-    ],
-    "indent": [
-      true,
-      "spaces"
-    ],
+    "comment-format": [true, "check-space"],
+    "indent": [true, "spaces"],
     "eofline": true,
     "no-duplicate-variable": true,
     "no-eval": true,
@@ -20,19 +14,8 @@
     "no-bitwise": true,
     "no-shadowed-variable": true,
     "no-unused-expression": true,
-    "no-unused-variable": true,
-    "one-line": [
-      true,
-      "check-catch",
-      "check-else",
-      "check-open-brace",
-      "check-whitespace"
-    ],
-    "quotemark": [
-      true,
-      "single",
-      "avoid-escape"
-    ],
+    "one-line": [true, "check-catch", "check-else", "check-open-brace", "check-whitespace"],
+    "quotemark": [true, "single", "avoid-escape"],
     "semicolon": [true, "always"],
     "typedef-whitespace": [
       true,
@@ -45,12 +28,7 @@
       }
     ],
     "curly": true,
-    "variable-name": [
-      true,
-      "ban-keywords",
-      "check-format",
-      "allow-trailing-underscore"
-    ],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-trailing-underscore"],
     "whitespace": [
       true,
       "check-branch",

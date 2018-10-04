@@ -1,4 +1,5 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+
 var exclude = /node_modules/;
 
 var defineObj = {
@@ -6,24 +7,23 @@ var defineObj = {
   ON_PRODUCTION: process.env.NODE_ENV === 'production'
 };
 
-var plugins = [
-  new webpack.DefinePlugin(defineObj),
-  new webpack.NoErrorsPlugin()
-];
+var plugins = [new webpack.DefinePlugin(defineObj), new webpack.NoEmitOnErrorsPlugin()];
 
 if (defineObj.ON_PRODUCTION) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({
-    minimize: true,
-    compress: {warnings: false},
-    output: {comments: false}
-  }));
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+      compress: { warnings: false },
+      output: { comments: false }
+    })
+  );
 }
 
 module.exports = {
   context: __dirname + '/src',
   entry: './index.ts',
   resolve: {
-    extensions: ['', '.ts', '.js']
+    extensions: ['.ts', '.js']
   },
   output: {
     path: __dirname + '/public/dist',
@@ -31,19 +31,30 @@ module.exports = {
     publicPath: '/dist/'
   },
   module: {
-    loaders: [
-      {test: /\.ts$/, loader: 'ng-annotate!ts!tslint', exclude: exclude},
-      {test: /\.css/, loader: defineObj.ON_PRODUCTION ? 'style!css?minimize' : 'style!css'},
-      {test: /\.scss/, loader: defineObj.ON_PRODUCTION ? 'style!css?minimize!sass' : 'style!css!sass'},
-      {test: /\.html/, loader: 'html'},
-      {test: /\.(png|gif)/, loader: 'file?name=img/[name].[ext]'},
-      {test: /\.(ttf|eot|svg|woff)/, loader: 'file?name=fonts/[name].[ext]'}
+    rules: [
+      {
+        test: /\.ts$/,
+        use: ['ng-annotate-loader', 'ts-loader', 'tslint-loader'],
+        exclude: exclude
+      },
+      {
+        test: /\.css/,
+        use: defineObj.ON_PRODUCTION
+          ? ['style-loader', 'css-loader?minimize']
+          : ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.scss/,
+        use: defineObj.ON_PRODUCTION
+          ? ['style-loader', 'css-loader?minimize', 'sass-loader']
+          : ['style-loader', 'css-loader', 'sass-loader']
+      },
+      { test: /\.html/, use: 'html-loader' },
+      { test: /\.(png|gif)/, use: 'file-loader?name=img/[name].[ext]' },
+      { test: /\.(ttf|eot|svg|woff)/, use: 'file-loader?name=fonts/[name].[ext]' }
     ]
   },
-  debug: !defineObj.ON_PRODUCTION,
+  mode: defineObj.ON_PRODUCTION ? 'production' : 'development',
   devtool: '#source-maps',
-  watchOptions: {
-    aggregateTimeout: 200
-  },
   plugins: plugins
 };

@@ -1,5 +1,7 @@
-import {Editor} from '../../../common/services/editor.service';
-import {blocos} from '../../../compartilhado/config';
+import { Editor } from '../../../common/services/editor.service';
+import { blocos } from '../../../compartilhado/config';
+
+declare const Blockly: any;
 
 export const blockly: angular.IComponentOptions = {
   template: require('./blockly.component.html'),
@@ -18,7 +20,7 @@ function BlocklyController($timeout, $window, editorService: Editor) {
   function $onInit() {
     const clientRect = window.document.body.getBoundingClientRect();
 
-    $ctrl.style = {height: (clientRect.height - 120) + 'px'};
+    $ctrl.style = { height: clientRect.height - 120 + 'px' };
 
     $timeout(initBlockly, 50);
   }

@@ -1,11 +1,15 @@
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 
 export class Firebase {
   public auth: any;
 
   /** @ngInject */
-  constructor(private FIREBASE_CONFIG, private $firebaseArray, private $firebaseObject,
-              $firebaseAuth) {
+  constructor(
+    private FIREBASE_CONFIG,
+    private $firebaseArray,
+    private $firebaseObject,
+    $firebaseAuth
+  ) {
     firebase.initializeApp(this.FIREBASE_CONFIG);
     this.auth = $firebaseAuth();
   }
@@ -25,6 +29,9 @@ export class Firebase {
   }
 
   storageUrl(path) {
-    return firebase.storage().ref(path).getDownloadURL();
+    return firebase
+      .storage()
+      .ref(path)
+      .getDownloadURL();
   }
 }

@@ -8,8 +8,7 @@ export class Editor {
 
   public workspace;
 
-  constructor(private usuario: Usuario, private firebase: Firebase) {
-  }
+  constructor(private usuario: Usuario, private firebase: Firebase) {}
 
   public submeterPrograma() {
     const dados = {
@@ -20,10 +19,12 @@ export class Editor {
 
     validarPrograma(dados.programa);
 
-    return this.firebase.createRef('programas').push(dados)
+    return this.firebase
+      .createRef('programas')
+      .push(dados)
       .then((data: any) =>
         this.firebase.createRef(`historico/${this.usuario.id}/${data.key}`).set(dados)
-      );
+      ) as Promise<any>;
   }
 
   public obterProgramas() {
@@ -50,7 +51,6 @@ export class Editor {
 }
 
 function numberInput(block) {
-
   const valor = block.inputList[0].fieldRow[1].text_;
 
   if (/^\d+$/.test(valor)) {
